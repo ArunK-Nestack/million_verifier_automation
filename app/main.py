@@ -129,7 +129,24 @@ def main() -> None:
         help="Do not delete the input file after processing",
     )
 
+    # Command: clean-cache
+    clean_parser = subparsers.add_parser(
+        "clean-cache",
+        help="Clean intermediate local cache files (prepared/ and results/)",
+    )
+    clean_parser.add_argument(
+        "--yes",
+        "-y",
+        action="store_true",
+        help="Skip confirmation prompt and clean immediately",
+    )
+
     args = parser.parse_args()
+
+    if args.command == "clean-cache":
+        import clean_cache
+        clean_cache.main()
+        return
 
     if args.command == "prepare":
         prepare_file(args.file)

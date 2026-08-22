@@ -19,11 +19,11 @@ When the agent is active (`python -m app.main` or `python -m app.main watch`):
 2. **Clean & Prepare:** Normalizes emails, removes syntax errors/blanks, and removes duplicates.
 3. **Upload to MillionVerifier:** Uploads cleaned list to Bulk API.
 4. **Verification Polling (50-60s):** Checks job progress every 60 seconds with live console feedback until `status = finished`.
-5. **Download & Categorization:** Downloads complete results and categorizes into:
-   - `million output/<file_name>/good/<file_name>_good.csv`
-   - `million output/<file_name>/bad/<file_name>_bad.csv`
-   - `million output/<file_name>/risky/<file_name>_risky.csv`
-   - `million output/<file_name>/run_summary.json`
+5. **Download & Categorization:** Downloads complete results and categorizes directly into `good`, `bad`, and `risky` folders:
+   - `million output/good/<file_name> - good - <total> total - <good> good.csv`
+   - `million output/bad/<file_name> - bad.csv`
+   - `million output/risky/<file_name> - risky.csv`
+   - `million output/summaries/<file_name>_run_summary.json`
 6. **Auto-Deletion of Input File:** Once verified and saved in `million output`, the source file is automatically deleted from `million input`.
 7. **Immediate Next File:** Checks for the next file in the input folder immediately and begins processing without delay.
 
@@ -46,3 +46,17 @@ python -m app.main process --once
 ```powershell
 python -m app.main config
 ```
+
+### Offline Column Restore / Re-merge (No API credits used)
+If you place original CSV files into the input folder to restore columns from previous runs:
+```powershell
+python restore_columns.py
+```
+*(Or specify custom folders with `python restore_columns.py -i "path/to/inputs" -o "path/to/outputs"`)*
+
+### Clean Local Cache (Free Up Disk Space)
+To manually purge temporary files in `prepared/` and `results/`:
+```powershell
+python clean_cache.py
+```
+*(Or with skip-prompt: `python clean_cache.py -y` or `python -m app.main clean-cache`)*

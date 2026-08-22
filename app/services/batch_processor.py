@@ -49,12 +49,10 @@ class BatchProcessor:
         output_dir: Path,
     ) -> FileProcessResult:
         file_stem = input_file.stem
-        target_subfolder = output_dir / file_stem
-        target_subfolder.mkdir(parents=True, exist_ok=True)
 
         result = FileProcessResult(
             input_file=input_file,
-            output_dir=target_subfolder,
+            output_dir=output_dir,
             status="in_progress",
         )
 
@@ -84,7 +82,7 @@ class BatchProcessor:
                 result.status = "skipped"
                 result.error_message = "No valid emails found in file."
                 result.completed_at = datetime.now().isoformat()
-                self._save_summary(result, target_subfolder)
+                self._save_summary(result, output_dir)
                 self._cleanup_input_file(input_file)
                 return result
 
@@ -110,11 +108,12 @@ class BatchProcessor:
 
             result.job_id = job.file_id
 
-            print(f"[{input_file.name}] Step 3/4: Categorizing into Good, Bad, and Risky folders...")
+            print(f"[{input_file.name}] Step 3/4: Categorizing into Good, Bad, and Risky files...")
             cat_summary = categorize_results(
                 csv_path=downloaded_csv,
-                output_subfolder=target_subfolder,
+                output_dir=output_dir,
                 base_filename=file_stem,
+                total_input_count=prep_result.total_rows,
             )
 
             result.good_count = cat_summary.good_count
@@ -141,7 +140,7 @@ class BatchProcessor:
             result.error_message = str(exc)
             result.completed_at = datetime.now().isoformat()
 
-        self._save_summary(result, target_subfolder)
+        self._save_summary(result, output_dir)
         return result
 
     def _cleanup_input_file(self, file_path: Path) -> None:
@@ -152,8 +151,10 @@ class BatchProcessor:
         except Exception as exc:
             print(f"  -> Warning: Could not delete input file {file_path.name}: {exc}")
 
-    def _save_summary(self, result: FileProcessResult, target_subfolder: Path) -> None:
-        summary_file = target_subfolder / "run_summary.json"
+    def _save_summary(self, result: FileProcessResult, output_dir: Path) -> None:
+        summaries_dir = output_dir / "summaries"
+        summaries_dir.mkdir(parents=True, exist_ok=True)
+        summary_file = summaries_dir / f"{result.input_file.stem}_run_summary.json"
         with summary_file.open("w", encoding="utf-8") as handle:
             json.dump(result.to_dict(), handle, indent=2)
 

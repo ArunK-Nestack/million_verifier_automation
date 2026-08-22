@@ -212,6 +212,7 @@ def prepare_csv(
 
     unique_emails: list[str] = []
     seen_emails: set[str] = set()
+    cleaned_rows: list[dict[str, str]] = []
 
     for row in rows:
         email = normalize_email(
@@ -233,6 +234,10 @@ def prepare_csv(
         seen_emails.add(email)
         unique_emails.append(email)
 
+        clean_row = dict(row)
+        clean_row[email_column] = email
+        cleaned_rows.append(clean_row)
+
     output_dir = Path(output_directory)
 
     output_dir.mkdir(
@@ -250,12 +255,12 @@ def prepare_csv(
         encoding="utf-8",
         newline="",
     ) as handle:
-        writer = csv.writer(handle)
+        writer = csv.DictWriter(handle, fieldnames=headers, extrasaction="ignore")
 
-        writer.writerow(["email"])
+        writer.writeheader()
 
-        for email in unique_emails:
-            writer.writerow([email])
+        for clean_row in cleaned_rows:
+            writer.writerow(clean_row)
 
     return PreparationResult(
         input_file=input_path,

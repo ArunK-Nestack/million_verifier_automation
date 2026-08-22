@@ -59,12 +59,14 @@ def classify_row(row: dict[str, str]) -> str:
 
 def categorize_results(
     csv_path: Path,
-    output_subfolder: Path,
+    output_dir: Path,
     base_filename: str,
+    total_input_count: int | None = None,
 ) -> CategorizationSummary:
     """
     Reads the downloaded verification CSV, splits it into Good, Bad, and Risky datasets,
-    and writes them into dedicated subfolders under output_subfolder.
+    and writes them directly into output_dir/good, output_dir/bad, and output_dir/risky.
+    The Good CSV filename includes the before-count (total input contacts) and good contacts count.
     """
     if not csv_path.is_file():
         raise FileNotFoundError(f"Verification results file not found: {csv_path}")
@@ -97,18 +99,25 @@ def categorize_results(
     if not fieldnames:
         fieldnames = ["email", "quality", "result"]
 
-    # Create subdirectories
-    good_dir = output_subfolder / "good"
-    bad_dir = output_subfolder / "bad"
-    risky_dir = output_subfolder / "risky"
+    good_dir = output_dir / "good"
+    bad_dir = output_dir / "bad"
+    risky_dir = output_dir / "risky"
 
     good_dir.mkdir(parents=True, exist_ok=True)
     bad_dir.mkdir(parents=True, exist_ok=True)
     risky_dir.mkdir(parents=True, exist_ok=True)
 
-    good_file = good_dir / f"{base_filename}_good.csv"
-    bad_file = bad_dir / f"{base_filename}_bad.csv"
-    risky_file = risky_dir / f"{base_filename}_risky.csv"
+    good_count = len(good_rows)
+    bad_count = len(bad_rows)
+    risky_count = len(risky_rows)
+
+    if total_input_count is not None:
+        good_file = good_dir / f"{base_filename} - good - {total_input_count} total - {good_count} good.csv"
+    else:
+        good_file = good_dir / f"{base_filename} - good - {good_count} good.csv"
+
+    bad_file = bad_dir / f"{base_filename} - bad.csv"
+    risky_file = risky_dir / f"{base_filename} - risky.csv"
 
     def _write_csv(path: Path, rows: list[dict[str, str]]) -> None:
         with path.open("w", encoding="utf-8", newline="") as handle:
@@ -122,9 +131,9 @@ def categorize_results(
     _write_csv(risky_file, risky_rows)
 
     return CategorizationSummary(
-        good_count=len(good_rows),
-        bad_count=len(bad_rows),
-        risky_count=len(risky_rows),
+        good_count=good_count,
+        bad_count=bad_count,
+        risky_count=risky_count,
         good_file=good_file,
         bad_file=bad_file,
         risky_file=risky_file,
