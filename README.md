@@ -2,6 +2,11 @@
 
 Automated continuous watcher agent to process email files from an **Input Folder**, clean and deduplicate them, verify them via the **MillionVerifier Bulk API**, and categorize the results into **Good**, **Bad**, and **Risky** folders inside a **Destination Folder**.
 
+
+---
+
+> **Official Documentation:** For the complete technical guide, architectural diagrams, API reference, and classification rules, see [DOCUMENTATION.md](file:///c:/Users/test/Desktop/projects/millionverifier_agent_step1/DOCUMENTATION.md).
+
 ---
 
 ## Configured Google Drive Paths
