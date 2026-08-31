@@ -112,7 +112,7 @@ def categorize_results(
     risky_count = len(risky_rows)
 
     if total_input_count is not None:
-        good_file = good_dir / f"{base_filename} - good - {total_input_count} total - {good_count} good.csv"
+        good_file = good_dir / f"{base_filename} - good - {good_count} good - {total_input_count} total.csv"
     else:
         good_file = good_dir / f"{base_filename} - good - {good_count} good.csv"
 
