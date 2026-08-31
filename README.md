@@ -2,6 +2,11 @@
 
 Automated continuous watcher agent to process email files from an **Input Folder**, clean and deduplicate them, verify them via the **MillionVerifier Bulk API**, and categorize the results into **Good**, **Bad**, and **Risky** folders inside a **Destination Folder**.
 
+
+---
+
+> **Official Documentation:** For the complete technical guide, architectural diagrams, API reference, and classification rules, see [DOCUMENTATION.md](file:///c:/Users/test/Desktop/projects/millionverifier_agent_step1/DOCUMENTATION.md).
+
 ---
 
 ## Configured Google Drive Paths
@@ -20,7 +25,7 @@ When the agent is active (`python -m app.main` or `python -m app.main watch`):
 3. **Upload to MillionVerifier:** Uploads cleaned list to Bulk API.
 4. **Verification Polling (50-60s):** Checks job progress every 60 seconds with live console feedback until `status = finished`.
 5. **Download & Categorization:** Downloads complete results and categorizes directly into `good`, `bad`, and `risky` folders:
-   - `million output/good/<file_name> - good - <total> total - <good> good.csv`
+   - `million output/good/<file_name> - good - <good> good - <total> total.csv`
    - `million output/bad/<file_name> - bad.csv`
    - `million output/risky/<file_name> - risky.csv`
    - `million output/summaries/<file_name>_run_summary.json`

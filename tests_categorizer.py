@@ -152,7 +152,7 @@ def test_restore_columns():
         assert counts["bad"] == 1
         assert counts["risky"] == 1
 
-        good_file = output_dir / "good" / "sample_input - good - 3 total - 1 good.csv"
+        good_file = output_dir / "good" / "sample_input - good - 1 good - 3 total.csv"
         assert good_file.exists()
         content = good_file.read_text(encoding="utf-8")
         assert "First Name,Last Name,Email Address,Company,City,quality,result,free,role" in content

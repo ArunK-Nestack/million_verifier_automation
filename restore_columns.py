@@ -129,7 +129,7 @@ def merge_and_categorize(
     bad_count = len(bad_rows)
     risky_count = len(risky_rows)
 
-    good_file = good_dir / f"{base_name} - good - {total_input_count} total - {good_count} good.csv"
+    good_file = good_dir / f"{base_name} - good - {good_count} good - {total_input_count} total.csv"
     bad_file = bad_dir / f"{base_name} - bad.csv"
     risky_file = risky_dir / f"{base_name} - risky.csv"
 

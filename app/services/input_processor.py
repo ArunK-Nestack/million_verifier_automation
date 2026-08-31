@@ -245,10 +245,7 @@ def prepare_csv(
         exist_ok=True,
     )
 
-    output_path = (
-        output_dir
-        / f"{input_path.stem}_verification_input.csv"
-    )
+    output_path = output_dir / input_path.name
 
     with output_path.open(
         "w",
